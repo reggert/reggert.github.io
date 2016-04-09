@@ -1,10 +1,1 @@
-{
-  "meta": {
-    "username": "reggert",
-    "repositoryName": "reggert.github.io",
-    "branch": "master"
-  },
-  "theme": {
-    "name": "Casper"
-  }
-}
+{"meta":{"username":"reggert","repositoryName":"reggert.github.io","branch":"master"},"site":{"title":"Broken Build","description":"The drunken ramblings of a software engineer","postsPerPage":"5","disqus":"@richardeggert","url":"https://reggert.github.io"},"socialnetwork":{"email":"richard.eggert+blog@gmail.com","twitter":"reggert1980","googleplus":"richard.eggert@gmail.com","linkedin":"richard-eggert-b26a2428","facebook":"richard.w.eggert","github":"reggert"},"theme":{"name":"Casper","url":"//reggert.github.io/themes/Casper"}}
