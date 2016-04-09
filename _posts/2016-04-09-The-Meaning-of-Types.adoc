@@ -2,4 +2,10 @@
 
 One of the most common "code smells" that I've come across is one that goes by the name "Primitive Obsession". No, it's not a men's fragrance by Calvin Kline. It refers to the tendency that many developers seem to have to not want to define custom classes to model the problem domains for which they are developing software. More specifically, "Primitive Obsession" is the use of "primitive' and built-in data types to represent domain concepts, rather than defining custom types to represent those concepts.
 
-As best I can tell, the primary reasons that this code smell is so prevalent are 1) laziness on the part of the developer and 2) ignorance of the "right way" to approach domain modeling.
+As best I can tell, the primary reasons that this code smell is so prevalent are 1) laziness on the part of the developer and 2) ignorance of the "right way" to approach domain modeling. In this article, I'll try to address both of these reasons.
+
+== Exemplī Grātiā
+
+In a past life, I worked as a consultant on a rather large Java project for a very large and important financial institution. The project was involved with trading certain types of financial securities. The standard way to identifying a financial security (in North America, at least) is the _CUSIP_ (which, incidentally, stands for _Committee on Uniform Security Identification Procedures_), a nine-character alphanumeric code that acts as a universal unique identifier for any security. The exact mechanism of generating CUSIPs is up to the institution issuing the security, but there are certain validation rules that can be applied, which are mainly intended to catch mistakes during manual data entry. For instance, the characters "I" and "O" are banned because they might be mistaken for "1" or "0", and the last character in each CUSIP acts as a checksum. 
+
+Given such an important domain concept with well-defined validation rules, one would hope that all CUSIPs in the system would be represented by a dedicated `CUSIP` class that enforces those rules. However, as you might guess from the subject of this article, when I joined the project, these values were instead being represented as plain Java `String` objects throughout the system. 
