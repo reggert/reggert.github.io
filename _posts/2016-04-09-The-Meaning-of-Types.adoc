@@ -1,0 +1,5 @@
+= The Meaning of Types
+
+One of the most common "code smells" that I've come across is one that goes by the name "Primitive Obsession". No, it's not a men's fragrance by Calvin Kline. It refers to the tendency that many developers seem to have to not want to define custom classes to model the problem domains for which they are developing software. More specifically, "Primitive Obsession" is the use of "primitive' and built-in data types to represent domain concepts, rather than defining custom types to represent those concepts.
+
+As best I can tell, the primary reasons that this code smell is so prevalent are 1) laziness on the part of the developer and 2) ignorance of the "right way" to approach domain modeling.
