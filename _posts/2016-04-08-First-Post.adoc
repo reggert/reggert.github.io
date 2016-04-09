@@ -1,0 +1,27 @@
+= First Post!
+
+== What the hell is this?
+
+This is my personal blog. It will be mostly about software development, software "engineering", computer science, computer programming, computer games, and other computery things, but I reserve the right to write about whatever the hell I feel like.
+
+== Who the hell am I?
+
+My name is Richard William Eggert II, but you can call me Rich. I am a software engineer. A software engineer is a fancy term for someone who creates computer software but has a Master's Degree in "Electrical and Computer Engineering" and doesn't want to feel like he wasted 5 years of his life by going into software development instead of designing cool hardware or nuclear power plants or whatever. I could call myself a "software developer" or "computer programmer", but the former are typically associated with people who make software products, and nobody under the age of 50 calls himself the latter unless he's a code monkey. I've spent my entire career working for contracting/consulting companies, so I could call myself a consultant, but consultants have gotten a bad reputation over the years, whereas the term "engineer" implies someone who is serious about doing things correctly. 
+
+== Why the hell does it look like this?
+
+So after agonizing over the decision for several days, I finally settled on HubPress for my blogging platform. It's very straightforward to set up, and it's is built on top of GitHub Pages, so I retain full control over the raw source of my content.
+
+Other options I considered:
+
+* TinyPress - It's sort of similar to HubPress in that it's built on top of GitHub, but you manage your content through a separate site, which didn't sit right with me, and I found the UI to be a bit underwhelming.
+* Jekyll - I was really looking forward to having full control over all my content and just using Jekyll to render it for me, but when I tried to install Bundler on my local machine as they suggested, I got a weird error message and gave up.
+* Straight Markdown on GitHub - This idea was inspired by Viktor Klang, who recently started using this for his https://github.com/viktorklang/blog[blog] instead of http://klangism.tumblr.com[Tumblr], but it just seemed too klunky, and I was afraid it would just confuse readers.
+* Various hosted services, such as Tumblr, WordPress, etc. - However, I wanted something a bit more technically-oriented, as well as to retain full control over the source (and therefore content and appearance).
+
+I'm still tweaking the appearance, so expect things to be in flux for a little while until I settle on a look that I like.
+
+== When the hell are you going to get to the good stuff?
+
+This is the obligatory "first post" announcing the blog and explaining its purpose. I plan to start writing a real technical article shortly and post it as soon as it is ready. Anyway, world, here I am. I hope this blog turns out to be everything you ever imagined it could be and more!
+
