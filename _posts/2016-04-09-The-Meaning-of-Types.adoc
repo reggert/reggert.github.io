@@ -8,4 +8,19 @@ As best I can tell, the primary reasons that this code smell is so prevalent are
 
 In a past life, I worked as a consultant on a rather large Java project for a very large and important financial institution. The project was involved with trading certain types of financial securities. The standard way to identifying a financial security (in North America, at least) is the _CUSIP_ (which, incidentally, stands for _Committee on Uniform Security Identification Procedures_), a nine-character alphanumeric code that acts as a universal unique identifier for any security. The exact mechanism of generating CUSIPs is up to the institution issuing the security, but there are certain validation rules that can be applied, which are mainly intended to catch mistakes during manual data entry. For instance, the characters "I" and "O" are banned because they might be mistaken for "1" or "0", and the last character in each CUSIP acts as a checksum. 
 
-Given such an important domain concept with well-defined validation rules, one would hope that all CUSIPs in the system would be represented by a dedicated `CUSIP` class that enforces those rules. However, as you might guess from the subject of this article, when I joined the project, these values were instead being represented as plain Java `String` objects throughout the system. 
+Given such an important domain concept with well-defined validation rules, one would hope that all CUSIPs in the system would be represented by a dedicated `CUSIP` class that enforces those rules. However, as you might guess from the subject of this article, when I joined the project, these values were instead being represented as plain Java `String` objects throughout the system. There were XML schemas defined for the messages that were passed between system components, but even there, the validation rules merely indicated "9-character string" with no further validation beyond that, and no custom type bindings for the JAXB classes that were being generated to represent these messages.
+
+As a result, a typical service interface that worked with CUSIPs might look like this:
+
+----
+public interface SecurityLookupService {
+   Security findSecurityByCUSIP(String cusip) throws SecurityNotFoundException;
+----
+
+Let's consider the implications of representing CUSIPs as plain `String` objects.
+
+First of all, the `String` class comes with no implication of any validation having been performed on its value. This means that any code that works with CUSIPs as `String` instances must make one of two assumptions:
+
+1. Assume that any `String` it receives is potentially invalid and therefore defensively validate every input. In a large system, this means that *every* CUSIP may be validated many times as it moves throughout the system, and the validation logic will be repeated in every piece of code that works with CUSIPs.
+2. Blindly assume that any `String` is receives has already been validated _somewhere_, and pray that there is no way for a CUSIP to enter the system via a path that does not include this validation.
+
