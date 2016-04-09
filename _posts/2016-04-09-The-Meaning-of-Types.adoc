@@ -22,5 +22,5 @@ Let's consider the implications of representing CUSIPs as plain `String` objects
 First of all, the `String` class comes with no implication of any validation having been performed on its value. This means that any code that works with CUSIPs as `String` instances must make one of two assumptions:
 
 1. Assume that any `String` it receives is potentially invalid and therefore defensively validate every input. In a large system, this means that *every* CUSIP may be validated many times as it moves throughout the system, and the validation logic will be repeated in every piece of code that works with CUSIPs.
-2. Blindly assume that any `String` is receives has already been validated _somewhere_, and pray that there is no way for a CUSIP to enter the system via a path that does not include this validation.
+2. Blindly assume that any `String` it receives has already been validated _somewhere_, and pray that there is no way for a CUSIP to enter the system via a path that does not include this validation.
 
