@@ -24,3 +24,6 @@ First of all, the `String` class comes with no implication of any validation hav
 1. Assume that any `String` it receives is potentially invalid and therefore defensively validate every input. In a large system, this means that *every* CUSIP may be validated many times as it moves throughout the system, and the validation logic will be repeated in every piece of code that works with CUSIPs.
 2. Blindly assume that any `String` it receives has already been validated _somewhere_, and pray that there is no way for a CUSIP to enter the system via a path that does not include this validation.
 
+As you can see, both of these assumptions seem fundamentally flawed. In one, duplicate code will be duplicated all over the case (and perhaps not even consistently), and in the other, everyone is putting blind faith into the idea that someone else has already done the work. Furthermore, there is no guarantee that every developer working on the system will make the same assumption, so you may see both approaches being used in various parts of the system.
+
+
