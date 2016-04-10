@@ -35,4 +35,19 @@ The approach I took to attempt to rectify this situation was to create an immuta
 3. Anyone looking at code using working with instances of `CUSIP` could immediately tell what type of value any variable, field, or parameter of type `CUSIP` was, since it would be right there in the name (unlike `String`, which doesn't tell you anything other than that it's a sequence of characters). This reduced confusion as well as cut down on the amount of documentation required.
 4. As an added bonus, I included a `static` `randomCUSIP` method, which would return an randomly-generated CUSIP for use in tests. This eliminated the need for developers to think of CUSIP values while writing tests, since, ultimately, they did not care what the values were, only that they matched what was expected in a given test scenario. This also meant that the tests would be written using valid CUSIP values and not made up, usually invalid ones.
 
+The importance of improving code clarity cannot be overstated. Many people talk about writing "self-documenting" code, but frequently that is just a euphemism for "*I* can tell what it does. Why can't you?" The type system is one of the most effective ways to make code truly self-documenting, but I will elaborate on that more later. First, I want to go into a bit more detail about point #2 above, regarding inadvertantly mixing up values.
+
+== A Tale of Two Identifiers
+
+On the subject of mixing up unrelated values because they are the same type, some people might argue "If you just give variables descriptive names, then that shouldn't be a problem." That argument is foolhardy for several reasons:
+
+1. Even if named descriptively, variables might have similar names because the things they represent are similar (but not the same), and therefore someone might still get them confused.
+2. In most programming languages (including Java, in particular), method/function arguments are matched to parameters based on the order they appear in the method/function signature and function call (though some languages, such as Scala, allow passing named arguments in any order, which alleviates this to some degree), so it's possible to mix up parameters of the same type just by getting the order wrong. This is even made worse when methods/functions are overloaded, in which case it may be possible to inadvertently call the wrong overloaded version of the method by forgetting to include an argument.
+3. Relying on the developer's ability to keep track of variable names provides no peace of mind for the developer, who must continually inspect every line of code for possible mistakes.
+
+Aside from CUSIPs, the project mentioned above worked with many other types of identifiers. Many of these were simply integer values, with the only validation rules, if any, being restrictions on the number of digits and whether negative values were allowed. At the point when I started working on the project, all of these identifiers were represented by the Java primitive type `long`.
+
+One module that I worked on operated on a particular domain object, which here I will call `FooPiece`, and additional domain objects representing bundles of these, which I will here call `FooBundle`. Each of these domain object classes had a numeric identifier associated with it. These identifiers, when assigned to variables verbosely, were typically called `fooPieceIdentifier` and `fooBundleIdentifier`, respectively. However, some developers found typing out variable names like these to be cumbersome, and soon started using abbreviated names like `fooId` and `fooBId`. It wasn't long before I came across a line of code that used `fooId` where `fooBId` should have been passed.
+
+
 
