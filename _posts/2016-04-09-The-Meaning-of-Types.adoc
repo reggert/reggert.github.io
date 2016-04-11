@@ -55,6 +55,16 @@ Had the code in question been working with classes named `FooPieceIdentifier` an
 
 It seems to me that many developers are stuck in a C mindset when it comes to types. In C, types primarily exist to define how data is stored in memory (indeed, you'll see the phrase "storage type" in some C and C++ compiler messages). Many developers seem to have carried this over to other, higher-level languages, such as Java, thinking of types only as a way to keeping track of how data is stored, and not as a way to impart semantic meaning to data. However, even C supports type aliasing (via `typedef`), which at least provides a very crude (and not nearly foolproof) mechanism by which a developer can try to signal the intent of what a particular value is to mean.
 
+A data type associates three pieces of information with a value:
+
+1. The in-memory representation of the value.
+2. The set of operations that are valid to be performed on that value.
+3. *The semantic meaning of the value in the domain of the application.*
+
+The first point seems to be the one that most developers focus on, yet it is the *least* important for anyone _using_ a particular value. In fact, the internal representation of a data type has _no bearing whatsoever_ on how that data fits into the functional requirements of the system. An application working with CUSIPs need not care how `CUSIP` instances are internally represented. It needs only know that a particular value a) is a CUSIP and b) can be manipulated using a particular set of operations. The internal storage may only be important to satisfy non-functional, performance-related requirements, but in most cases that is seldom an important concern.
+
+The third point is highlighted because it is the most overlooked yet generally the most important for modeling a problem domain properly.
+
 
 
 
