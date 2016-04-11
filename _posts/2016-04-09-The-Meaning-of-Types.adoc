@@ -51,5 +51,11 @@ One module that I worked on operated on a particular domain object, which here I
 
 Had the code in question been working with classes named `FooPieceIdentifier` and `FooBundleIdentifier`, the mistake would have been caught right away, because the attempt to use a `FooPieceIdentifier` where a `FooBundleIdentifier` was expected wouldn't have gotten past the compiler's type checker.
 
+== But what does it all mean?
+
+It seems to me that many developers are stuck in a C mindset when it comes to types. In C, types primarily exist to define how data is stored in memory (indeed, you'll see the phrase "storage type" in some C and C++ compiler messages). Many developers seem to have carried this over to other, higher-level languages, such as Java, thinking of types only as a way to keeping track of how data is stored, and not as a way to impart semantic meaning to data. However, even C supports type aliasing (via `typedef`), which at least provides a very crude (and not nearly foolproof) mechanism by which a developer can try to signal the intent of what a particular value is to mean.
+
+
+
 
 
