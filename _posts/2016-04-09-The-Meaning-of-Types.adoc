@@ -63,7 +63,9 @@ A data type associates three pieces of information with a value:
 
 The first point seems to be the one that most developers focus on, yet it is the *least* important for anyone _using_ a particular value. In fact, the internal representation of a data type has _no bearing whatsoever_ on how that data fits into the functional requirements of the system. An application working with CUSIPs need not care how `CUSIP` instances are internally represented. It needs only know that a particular value a) is a CUSIP and b) can be manipulated using a particular set of operations. The internal storage may only be important to satisfy non-functional, performance-related requirements, but in most cases that is seldom an important concern.
 
-The third point is highlighted because it is the most overlooked yet generally the most important for modeling a problem domain properly.
+The third point is highlighted because it is the most overlooked yet generally the most important for modeling a problem domain properly. For the sake of writing clean, understandable, and reliable code, *a type should clearly express the _meaning_ of a piece of information in the context of the application*. Additionally, a given concept should be expressed by exactly one type throughout the system, even if it may in stored or displayed in different formats (and those different formats may be obtained via conversion operations on the type itself, or by separate format objects, as appropriate). Furthermore, each type should _precisely_ describe the concept it represents, with no more information than necessary, and no less. A date and a timestamp are two separately concepts, though related, and therefore they should be represented by separate types, though those types may be related as parts of the same inheritance hierarchy, for example.
+
+
 
 
 
