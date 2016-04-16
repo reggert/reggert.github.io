@@ -74,8 +74,26 @@ For his part, Dr. Hoare refers to his invention as his "billion dollar mistake".
 
 The main problem with null references is that they undermine the type system. Any given reference can _either_ point to an object of the specified type _or_ nothing at all, and it's entirely up to the developer to keep track of whether any given value might be null. Runtime errors result if the developer neglects to check for null when it is necessary, and unnecessary null checks result in useless and confusing code.
 
-Some languages, such as Kotlin and Ceylon, attempt to wrangle null references by adding special syntax to indicate what variables are "nullable". Other languages provide special types, such as Haskell's `Maybe` and Scala's `Option`, that act like containers of zero or one element. Java 8 takes the latter approach, providing the generic `Optional` class. For earlier versions of Java, the Guava library provides a similar class, also named `Optional`, which is not as powerful but still works well for keeping track of variables that may or may not have values.
+Some languages, such as Kotlin and Ceylon, attempt to wrangle null references by adding special syntax to indicate what variables are "nullable". Other languages provide special types, such as Haskell's `Maybe` and Scala's `Option`, that act like immutable containers of zero or one element. Both approaches force developers to deal with missing values explicitly, under penalty of a compile-time error if you forget (rather than having to wait for a `NullPointerException` at runtime). Java 8 takes the latter approach, providing the generic http://docs.oracle.com/javase/8/docs/api/java/util/Optional.html[`java.util.Optional`] class. 
 
+You obtain an empty instance by calling `Optional.empty()`, and you obtain an instance that has a value by calling `Optional.of(value)`. When interacting with code that uses `null` instead of `Optional`, you can also convert a nullable value to a (not null) `Optional` by calling `Optional.ofNullable(valueOrNull)`, and you can convert it back to a possibly-null value by calling its `orElse` method with an argument of `null`. When receiving an instance of `Optional`, you can either use an `if` conditional to check its `isPresent()` method to check whether it has a value (which can be obtained using its `get` method), or you can lambdas with other methods to specify actions to be performed if and only if the value is present.
+
+For earlier versions of Java, the Guava library provides a similar class, also named http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Optional.html[`Optional`]. Its methods are named slightly differently, but it works in more or less the same way as the Java 8 `Optional`. 
+
+Using the `Optional` class for method and constructor parameters makes it obvious which values are, well, optional, without the need for the caller to consult documentation. For return values, it makes it clear that a particular method might not return a value. Take the following query service interface as an example.
+
+----
+public interface UserLookupService {
+   Optional<User> findUserByName(UserName username);
+   List<User> findActiveUsers(Optional<Duration> maxIdleTime);
+}
+----
+
+Even without any documentation, it is immediately obvious that `findUserByName` will return an empty `Optional` (rather than `null` or throwing an exception) if it cannot find the specified user, and it is also clear that the `maxIdleTime` parameter of `findActionUsers` is not a required value. Futhermore, if you are diligent about always using `Optional` and not `null` throughout your codebase, you can be reasonability certain that `null` is not a valid argument to pass to either method, and that neither method will ever return `null` (and doing so would be considered a bug).
+
+I strongly encourage all Java developers to banish `null` completely from their projects. Always use `Optional` to represent potentially missing values. Wherever you must interact with code that deals in nulls (such as `java.util.Map`, whose `get` method returns `null` if no element matches the specified key), always immediately wrap the nullable value in an `Optional`, and convert back to a nullable value only precisely when needed. The only other place where `null` may legitimately appear is in initialization logic, where it may show up as a temporary state of a field that has not been initialized yet (e.g., because the constructor of the enclosing object hasn't finished executing yet). If a `null` appears at any other time, it should be treated as if the containing scope is in an illegal state, and therefore a likely bug.
+
+You may be tempted to forgo the ceremony associated with wrapping a nullable value in an `Optional` when that value is only going to be immediately checked for "null-ness" (or "non-null-ness") and then forgotten (such as when you are doing something as simple as `if (foo.bar() == null)`). However, letting _any_ null creep into your code yields a slippery slope towards chaos and confusion. A few extra keystrokes (such as replacing the previous example with `if (Optional.ofNullable(foo.bar()).isPresent())`) is a small price to pay for the piece of mind and code clarity that is attained by ensuring that all optional values are diligently captured as instances of `Optional`.
 
 
 
