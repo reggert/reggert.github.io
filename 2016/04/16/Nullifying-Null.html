@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Nullifying Null</title>
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="//reggert.github.io/themes/Casper/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="//reggert.github.io/themes/Casper/assets/css/screen.css?v=1.0.0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://reggert.github.io/2016/04/16/Nullifying-Null.html" />
+    
+    <meta property="og:site_name" content="Broken Build" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Nullifying Null" />
+    <meta property="og:description" content="This is the first in a multipart series that I am tentatively calling Making Your Java Code Not Suck. A big mistake The null reference was (arguably) invented (for statically typed languages, at least) in 1965 by the computer scientist..." />
+    <meta property="og:url" content="https://reggert.github.io/2016/04/16/Nullifying-Null.html" />
+    <meta property="article:published_time" content="2016-04-16T04:00:00.000Z" />
+    <meta property="article:modified_time" content="2016-04-16T16:55:26.196Z" />
+    <meta property="article:tag" content="Java" />
+    <meta property="article:tag" content="null" />
+    <meta property="article:tag" content="programming" />
+    <meta property="article:tag" content="Optional" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Nullifying Null" />
+    <meta name="twitter:description" content="This is the first in a multipart series that I am tentatively calling Making Your Java Code Not Suck. A big mistake The null reference was (arguably) invented (for statically typed languages, at least) in 1965 by the computer scientist..." />
+    <meta name="twitter:url" content="https://reggert.github.io/2016/04/16/Nullifying-Null.html" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Broken Build",
+    "author": {
+        "@type": "Person",
+        "name": "Richard W. Eggert II",
+        "image": "https://avatars.githubusercontent.com/u/1971881?v=3",
+        "url": "undefined/author/undefined",
+        "sameAs": null
+    },
+    "headline": "Nullifying Null",
+    "url": "https://reggert.github.io/2016/04/16/Nullifying-Null.html",
+    "datePublished": "2016-04-16T04:00:00.000Z",
+    "dateModified": "2016-04-16T16:55:26.196Z",
+    "keywords": "Java,  null,  programming,  Optional",
+    "description": "This is the first in a multipart series that I am tentatively calling Making Your Java Code Not Suck. A big mistake The null reference was (arguably) invented (for statically typed languages, at least) in 1965 by the computer scientist..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost ?" />
+    <link rel="alternate" type="application/rss+xml" title="Broken Build" href="https://reggert.github.io/rss" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+</head>
+<body class="post-template tag-Java tag-null tag-programming tag-Optional">
+
+    
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="https://reggert.github.io">Home</a>
+        <!-- <a class="subscribe-button icon-feed" href="https://reggert.github.io/rss/">Subscribe</a> -->
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post tag-Java tag-null tag-programming tag-Optional">
+
+        <header class="post-header">
+            <h1 class="post-title">Nullifying Null</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2016-04-16">16 April 2016</time>  on <a href="https://reggert.github.io/tag/Java">Java</a>, <a href="https://reggert.github.io/tag/null"> null</a>, <a href="https://reggert.github.io/tag/programming"> programming</a>, <a href="https://reggert.github.io/tag/Optional"> Optional</a>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is the first in a multipart series that I am tentatively calling <em>Making Your Java Code Not Suck</em>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_a_big_mistake">A big mistake</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The null reference was (arguably) invented (for statically typed languages, at least) in 1965 by the computer scientist Tony Hoare (of Quicksort fame) for the ALGOL W programming language. Since then, this invention has been replicated in many other languages, including Java.</p>
+</div>
+<div class="paragraph">
+<p>For his part, Dr. Hoare refers to his invention as his "billion dollar mistake". He does not mean this as hyperbole or exaggeration. He literally means that he believes that a billion dollars is a pretty good ballpark figure for the amount of real damage that has resulted from errors caused by null references in the past half a century.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_why_code_null_code_is_bad_for_you">Why <code>null</code> is bad for you</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The main problem with null references is that they undermine the type system. Any given reference can <em>either</em> point to an object of the specified type <em>or</em> nothing at all, and it&#8217;s entirely up to the developer to keep track of whether any given value might be null. Runtime errors result if the developer neglects to check for null when it is necessary, and unnecessary null checks result in useless and confusing code.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_so_what_s_the_solution">So what&#8217;s the solution?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some languages, such as Kotlin and Ceylon, attempt to wrangle null references by adding special syntax to indicate what variables are "nullable". Other languages provide special types, such as Haskell&#8217;s <code>Maybe</code> and Scala&#8217;s <code>Option</code>, that act like immutable containers of zero or one element. Both approaches force developers to deal with missing values explicitly, under penalty of a compile-time error if you forget (rather than having to wait for a <code>NullPointerException</code> at runtime). Java 8 takes the latter approach, providing the generic <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Optional.html"><code>java.util.Optional</code></a> class.</p>
+</div>
+<div class="paragraph">
+<p>You obtain an empty instance by calling <code>Optional.empty()</code>, and you obtain an instance that has a value by calling <code>Optional.of(value)</code>. When interacting with code that uses <code>null</code> instead of <code>Optional</code>, you can also convert a nullable value to a (not null) <code>Optional</code> by calling <code>Optional.ofNullable(valueOrNull)</code>, and you can convert it back to a possibly-null value by calling its <code>orElse</code> method with an argument of <code>null</code>. When receiving an instance of <code>Optional</code>, you can either use an <code>if</code> conditional to call its <code>isPresent()</code> method to check whether it has a value (which can be obtained using its <code>get</code> method), or you can lambdas with other methods to specify actions to be performed if and only if the value is present.</p>
+</div>
+<div class="paragraph">
+<p>For earlier versions of Java, the Guava library provides a similar class, also named <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Optional.html"><code>Optional</code></a>. Its methods are named slightly differently, but it works in more or less the same way as the Java 8 <code>Optional</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_and_why_is_this_any_better">And why is this any better?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Using the <code>Optional</code> class for method and constructor parameters makes it obvious which values are, well, optional, without the need for the caller to consult documentation or examine the source code. For return values, it makes it clear that a particular method might not return a value. Take the following query service interface as an example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>public interface UserLookupService {
+   Optional&lt;User&gt; findUserByName(UserName username);
+   List&lt;User&gt; findActiveUsers(Optional&lt;Duration&gt; maxIdleTime);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Even without any documentation or an implementation to inspect, it is immediately obvious that <code>findUserByName</code> will return an empty <code>Optional</code> (rather than <code>null</code> or throwing an exception) if it cannot find the specified user, and it is also clear that the <code>maxIdleTime</code> parameter of <code>findActionUsers</code> is not a required value. Futhermore, if you are diligent about always using <code>Optional</code> and not <code>null</code> throughout your codebase, you can be reasonability certain that <code>null</code> is not a valid argument to pass to either method, and that neither method will ever return <code>null</code> (and doing so would be considered a bug).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_bottom_line">The bottom line</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>I strongly encourage all Java developers to banish <code>null</code> completely from their projects. Always use <code>Optional</code> to represent potentially missing values. Wherever you must interact with code that deals in nulls, always immediately wrap the nullable value in an <code>Optional</code>, and convert back to a nullable value only precisely when needed, such as in the following example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>final Map&lt;Key, Value&gt; keyValuePairs = getKeyValuePairs();
+final Optional&lt;Value&gt; valueForKey = Optional.ofNullable(keyValuePairs.get(key));
+if (valueForKey.isPresent()) {
+   // do stuff with value
+}
+else {
+   throw new MissingValueException();
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Do this even if you are going to just pass the value along to other code that accepts nullable values.</strong> Packing a value in an <code>Optional</code> and then immediately unpacking it may seem like a waste of effort. However, it makes it immediately obvious to anyone reading your code (including you, coming back to the code a month later after having forgotten all the details) that the value in question might not exist, and that you&#8217;re passing it between two pieces of code that deal in <code>null</code>. Don&#8217;t worry about the performance cost of creating an instance of <code>Optional</code> and then throwing it away. Constructing very small, short-lived objects on the JVM is very cheap, and in many cases the compiler can optimize them away altogether.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_caveat_emptor">Caveat emptor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The only other place where <code>null</code> may legitimately appear is in initialization logic, where it may show up as a temporary state of a field that has not been initialized yet (e.g., because the constructor of the enclosing object hasn&#8217;t finished executing yet). If a <code>null</code> appears at any other time, it should be treated as if the containing scope is in an illegal state, and therefore a likely bug.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resist_temptation">Resist temptation!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You may be tempted to forgo the ceremony associated with wrapping a nullable value in an <code>Optional</code> when that value is only going to be immediately checked for "null-ness" (or "non-null-ness") and then forgotten, such as in the following case:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>if (foo.bar() != null) {
+   // do something
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, letting <em>any</em> null creep into your code yields a slippery slope towards chaos and confusion, since it then becomes unclear if a given piece of code that lacks a null check is really not nullable, or if the null check was simply forgotten. The above code should therefore be written as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>if (Optional.ofNullable(foo.bar()).isPresent()) {
+   // do something
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s a bit wordy, but it clearly flags the <code>foo.bar()</code> call as returning a possibly-null value, and it instills anyone reading your code with confidence that you&#8217;ve been diligently managing any possible sources of <code>null</code>. A few extra keystrokes is a small price to pay for the piece of mind and code clarity that is attained by ensuring that all optional values are diligently and <em>consistently</em> captured as instances of <code>Optional</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_precondition_checks">Precondition checks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To avoid letting <code>null</code> creep into your code inadvertantly in a way that violates your code invariants, it is important to include precondition checks at the top of any public method or constructor that works with non-primitive parameters. This is especially important for parameters that get stored as fields, since a <code>null</code> that slips in via one of those might hang around until a much later method call, violating that method&#8217;s invariant to never return <code>null</code>.</p>
+</div>
+<div class="paragraph">
+<p>Java 8 introduced the <code>java.util.Objects</code> class, which provides static methods for performing common tasks on objects. These include a method named <code>requireNonNull</code>, which throws a customizable <code>NullPointerException</code> if its argument is <code>null</code>. For earlier versions of Java, Guava&#8217;s <code>Preconditions.checkNotNull</code> method works in the same way. Examples of appropriate use of each are shown below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>public final class BigPoint implements Serializable {
+   private final BigDecimal x;
+   private final BigDecimal y;
+   private final BigDecimal z;
+
+   // Java 8
+   public BigPoint(final BigDecimal x, final BigDecimal y, final BigDecimal z) {
+      this.x = Objects.requireNonNull(x, "x");
+      this.y = Objects.requireNonNull(y, "y");
+      this.z = Objects.requireNonNull(z, "z");
+   }
+
+   // Java 6, Java 7
+   public BigPoint(final BigDecimal x, final BigDecimal y, final BigDecimal z) {
+      this.x = Preconditions.checkNotNull(x, "x");
+      this.y = Preconditions.checkNotNull(y, "y");
+      this.z = Preconditions.checkNotNull(z, "z");
+   }
+
+   public BigDecimal getX() {
+      return x; // guaranteed non-null
+   }
+
+   // more methods....</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that some people find more verbose error messages than simply the parameter name. However, I find that the combination of <code>NullPointerException</code> with the name of the thing that was <code>null</code> is sufficient information to understand exactly what the problem is without getting too wordy.</p>
+</div>
+<div class="paragraph">
+<p>Also, you will likely find it useful to use <code>static import</code> so that you can just call the null-check methods without qualifying them with their class names, but I left the class names in the above example for the sake of clarity about which class was being used in each case.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_epilogue">Epilogue</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To reiterate, all active Java projects should migrate to banning <code>null</code> from their codebases as soon as possible, replacing them with the <code>java.util.Optional</code> class (falling back on Guava&#8217;s <code>Optional</code> for projects using Java 6 or 7). Doing so will improve the reliability of the code, make it easier to debug (since any appearance of <code>null</code> indicates a bug), as well as make it for anyone attempting to maintain the code or use its interfaces to understand which values are required and which are optional. Half a century later, we should all be doing our best to limit the damage caused by null references to <em>just</em> a billion dollars.</p>
+</div>
+</div>
+</div>
+        </section>
+
+        <footer class="post-footer">
+
+
+            <figure class="author-image">
+                <a class="img" href="" style="background-image: url(https://avatars.githubusercontent.com/u/1971881?v=3)"><span class="hidden">Richard W. Eggert II's Picture</span></a>
+            </figure>
+
+            <section class="author">
+                <h4><a href="">Richard W. Eggert II</a></h4>
+
+                    <p>Read <a href="">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    <span class="author-location icon-location">Baltimore, MD</span>
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/share?text=Nullifying%20Null&amp;url=https://reggert.github.io/2016/04/16/Nullifying-Null.html"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://reggert.github.io/2016/04/16/Nullifying-Null.html"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https://reggert.github.io/2016/04/16/Nullifying-Null.html"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+        <section class="post-comments">
+          <div id="disqus_thread"></div>
+          <script type="text/javascript">
+          var disqus_shortname = 'brokenbuild'; // required: replace example with your forum shortname
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </section>
+
+
+    </article>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="https://reggert.github.io">Broken Build</a> &copy; 2016</section>
+        <section class="poweredby">Proudly published with <a href="http://hubpress.io">HubPress</a></section>
+    </footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
+      <script type="text/javascript">
+        jQuery( document ).ready(function() {
+          // change date with ago
+          jQuery('ago.ago').each(function(){
+            var element = jQuery(this).parent();
+            element.html( moment(element.text()).fromNow());
+          });
+        });
+
+        hljs.initHighlightingOnLoad();      
+      </script>
+
+    <script type="text/javascript" src="//reggert.github.io/themes/Casper/assets/js/jquery.fitvids.js?v=1.0.0"></script>
+    <script type="text/javascript" src="//reggert.github.io/themes/Casper/assets/js/index.js?v=1.0.0"></script>
+
+</body>
+</html>
