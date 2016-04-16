@@ -32,7 +32,7 @@ public interface UserLookupService {
 }
 ----
 
-Even without any documentation, it is immediately obvious that `findUserByName` will return an empty `Optional` (rather than `null` or throwing an exception) if it cannot find the specified user, and it is also clear that the `maxIdleTime` parameter of `findActionUsers` is not a required value. Futhermore, if you are diligent about always using `Optional` and not `null` throughout your codebase, you can be reasonability certain that `null` is not a valid argument to pass to either method, and that neither method will ever return `null` (and doing so would be considered a bug).
+Even without any documentation or an implementation to inspect, it is immediately obvious that `findUserByName` will return an empty `Optional` (rather than `null` or throwing an exception) if it cannot find the specified user, and it is also clear that the `maxIdleTime` parameter of `findActionUsers` is not a required value. Futhermore, if you are diligent about always using `Optional` and not `null` throughout your codebase, you can be reasonability certain that `null` is not a valid argument to pass to either method, and that neither method will ever return `null` (and doing so would be considered a bug).
 
 == The bottom line
 
