@@ -49,7 +49,7 @@ else {
 }
 ----
 
-*Do this even if you are going to just pass the value along to other code that accepts nullable values.* Packing a value in an `Optional` and then immediately unpacking it may seem like a waste of effort, however, it makes it immediately obvious to anyone reading your code (including you, coming back to the code a month later after having forgotten all the details) that the value in question might not exist, and that you're passing it between two pieces of code that deal in `null`. Don't worry about the performance cost of creating an instance of `Optional` and then throwing it away. Constructing very small, short-lived objects on the JVM is very cheap, and in many cases the compiler can optimize them away altogether.
+*Do this even if you are going to just pass the value along to other code that accepts nullable values.* Packing a value in an `Optional` and then immediately unpacking it may seem like a waste of effort. However, it makes it immediately obvious to anyone reading your code (including you, coming back to the code a month later after having forgotten all the details) that the value in question might not exist, and that you're passing it between two pieces of code that deal in `null`. Don't worry about the performance cost of creating an instance of `Optional` and then throwing it away. Constructing very small, short-lived objects on the JVM is very cheap, and in many cases the compiler can optimize them away altogether.
 
 == Caveat emptor
 
