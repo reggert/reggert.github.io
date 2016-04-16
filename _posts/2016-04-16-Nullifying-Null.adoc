@@ -1,4 +1,5 @@
 = Nullifying Null
+:hp-tags: java, null, programming, Optional
 
 This is the first in a multipart series that I am tentatively calling _Making Your Java Code Not Suck_.
 
