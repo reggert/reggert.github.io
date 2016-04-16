@@ -91,7 +91,22 @@ public interface UserLookupService {
 
 Even without any documentation, it is immediately obvious that `findUserByName` will return an empty `Optional` (rather than `null` or throwing an exception) if it cannot find the specified user, and it is also clear that the `maxIdleTime` parameter of `findActionUsers` is not a required value. Futhermore, if you are diligent about always using `Optional` and not `null` throughout your codebase, you can be reasonability certain that `null` is not a valid argument to pass to either method, and that neither method will ever return `null` (and doing so would be considered a bug).
 
-I strongly encourage all Java developers to banish `null` completely from their projects. Always use `Optional` to represent potentially missing values. Wherever you must interact with code that deals in nulls (such as `java.util.Map`, whose `get` method returns `null` if no element matches the specified key), always immediately wrap the nullable value in an `Optional`, and convert back to a nullable value only precisely when needed. The only other place where `null` may legitimately appear is in initialization logic, where it may show up as a temporary state of a field that has not been initialized yet (e.g., because the constructor of the enclosing object hasn't finished executing yet). If a `null` appears at any other time, it should be treated as if the containing scope is in an illegal state, and therefore a likely bug.
+I strongly encourage all Java developers to banish `null` completely from their projects. Always use `Optional` to represent potentially missing values. Wherever you must interact with code that deals in nulls, always immediately wrap the nullable value in an `Optional`, and convert back to a nullable value only precisely when needed, such as in the following example.
+
+----
+final Map<Key, Value> keyValuePairs = getKeyValuePairs();
+final Optional<Value> valueForKey = Optional.ofNullable(keyValuePairs.get(key));
+if (valueForKey.isPresent()) {
+   // do stuff with value
+}
+else {
+   throw new MissingValueException();
+}
+----
+
+*Do this even if you are going to just pass the value along to other code that accepts nullable values.* Packing a value in an `Optional` and then immediately unpacking it may seem like a waste of effort, however, it makes it immediately obvious to anyone reading your code (including you, coming back to the code a month later after having forgotten all the details) that the value in question might not exist, and that you're passing it between two pieces of code that deal in `null`. Don't worry about the performance cost of creating an instance of `Optional` and then throwing it away. Constructing very small, short-lived objects on the JVM is very cheap, and in many cases the compiler can optimize them away altogether.
+
+The only other place where `null` may legitimately appear is in initialization logic, where it may show up as a temporary state of a field that has not been initialized yet (e.g., because the constructor of the enclosing object hasn't finished executing yet). If a `null` appears at any other time, it should be treated as if the containing scope is in an illegal state, and therefore a likely bug.
 
 You may be tempted to forgo the ceremony associated with wrapping a nullable value in an `Optional` when that value is only going to be immediately checked for "null-ness" (or "non-null-ness") and then forgotten (such as when you are doing something as simple as `if (foo.bar() != null)`). However, letting _any_ null creep into your code yields a slippery slope towards chaos and confusion. A few extra keystrokes (such as replacing the previous example with `if (Optional.ofNullable(foo.bar()).isPresent())`) is a small price to pay for the piece of mind and code clarity that is attained by ensuring that all optional values are diligently and _consistently_ captured as instances of `Optional`.
 
