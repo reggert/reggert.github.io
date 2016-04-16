@@ -56,6 +56,22 @@ The only other place where `null` may legitimately appear is in initialization l
 
 == Resist temptation!
 
-You may be tempted to forgo the ceremony associated with wrapping a nullable value in an `Optional` when that value is only going to be immediately checked for "null-ness" (or "non-null-ness") and then forgotten (such as when you are doing something as simple as `if (foo.bar() != null)`). However, letting _any_ null creep into your code yields a slippery slope towards chaos and confusion. A few extra keystrokes (such as replacing the previous example with `if (Optional.ofNullable(foo.bar()).isPresent())`) is a small price to pay for the piece of mind and code clarity that is attained by ensuring that all optional values are diligently and _consistently_ captured as instances of `Optional`.
+You may be tempted to forgo the ceremony associated with wrapping a nullable value in an `Optional` when that value is only going to be immediately checked for "null-ness" (or "non-null-ness") and then forgotten, such as in the following case:
+
+----
+if (foo.bar() != null) {
+   // do something
+}
+----
+
+However, letting _any_ null creep into your code yields a slippery slope towards chaos and confusion. The above code should therefore be written as:
+
+----
+if (Optional.ofNullable(foo.bar()).isPresent()) {
+   // do something
+}
+----
+
+It's a bit wordy, but it clearly flags the `foo.bar()` call as returning a possibly-null value, and it instills anyone reading your code will confidence that you've been diligently managing any possible sources of `null. A few extra keystrokes is a small price to pay for the piece of mind and code clarity that is attained by ensuring that all optional values are diligently and _consistently_ captured as instances of `Optional`.
 
 
