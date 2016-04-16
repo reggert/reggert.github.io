@@ -65,7 +65,7 @@ if (foo.bar() != null) {
 }
 ----
 
-However, letting _any_ null creep into your code yields a slippery slope towards chaos and confusion. The above code should therefore be written as:
+However, letting _any_ null creep into your code yields a slippery slope towards chaos and confusion, since it then becomes unclear if a given piece of code that lacks a null check is really not nullable, or if the null check was simply forgotten. The above code should therefore be written as:
 
 ----
 if (Optional.ofNullable(foo.bar()).isPresent()) {
