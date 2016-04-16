@@ -70,7 +70,7 @@ The third point is highlighted because it is the most overlooked yet generally t
 
 The null reference was (arguably) invented (for statically typed languages, at least) in 1965 by the computer scientist Tony Hoare (of Quicksort fame) for the ALGOL W programming language. Since then, this invention has been replicated in many other languages, including Java.
 
-For his part, Dr. Hoare refers to his invention as his "billion dollar mistake". He does not mean this as hyperbole. He means that he believes that a billion dollars literally is a pretty good ballpark figure for the amount of damage that has resulted from error caused by null references in the past half a century.
+For his part, Dr. Hoare refers to his invention as his "billion dollar mistake". He does not mean this as hyperbole or exaggeration. He literally means that he believes that a billion dollars is a pretty good ballpark figure for the amount of real damage that has resulted from errors caused by null references in the past half a century.
 
 The main problem with null references is that they undermine the type system. Any given reference can _either_ point to an object of the specified type _or_ nothing at all, and it's entirely up to the developer to keep track of whether any given value might be null. Runtime errors result if the developer neglects to check for null when it is necessary, and unnecessary null checks result in useless and confusing code.
 
