@@ -23,7 +23,7 @@ For earlier versions of Java, the Guava library provides a similar class, also n
 
 == And why is this any better?
 
-Using the `Optional` class for method and constructor parameters makes it obvious which values are, well, optional, without the need for the caller to consult documentation. For return values, it makes it clear that a particular method might not return a value. Take the following query service interface as an example.
+Using the `Optional` class for method and constructor parameters makes it obvious which values are, well, optional, without the need for the caller to consult documentation or examine the source code. For return values, it makes it clear that a particular method might not return a value. Take the following query service interface as an example.
 
 ----
 public interface UserLookupService {
