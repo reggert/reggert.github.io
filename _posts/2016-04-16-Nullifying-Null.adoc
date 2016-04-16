@@ -77,7 +77,7 @@ It's a bit wordy, but it clearly flags the `foo.bar()` call as returning a possi
 
 == Precondition checks
 
-To avoid letting `null` creep into your code inadvertantly in a way that violates your code invariants, it is important to include precondition checks at the top of any method or constructor that works with non-primitive parameters. This is especially important for parameters that get stored as fields, since a `null` that slips in via one of those might hang around until a much later method call, violating that method's invariant to never return `null`.
+To avoid letting `null` creep into your code inadvertantly in a way that violates your code invariants, it is important to include precondition checks at the top of any public method or constructor that works with non-primitive parameters. This is especially important for parameters that get stored as fields, since a `null` that slips in via one of those might hang around until a much later method call, violating that method's invariant to never return `null`.
 
 Java 8 introduced the `java.util.Objects` class, which provides static methods for performing common tasks on objects. These include a method named `requireNonNull`, which throws a customizable `NullPointerException` if its argument is `null`. For earlier versions of Java, Guava's `Preconditions.checkNotNull` method works in the same way. Examples of appropriate use of each are shown below.
 
