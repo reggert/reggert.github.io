@@ -73,6 +73,6 @@ if (Optional.ofNullable(foo.bar()).isPresent()) {
 }
 ----
 
-It's a bit wordy, but it clearly flags the `foo.bar()` call as returning a possibly-null value, and it instills anyone reading your code will confidence that you've been diligently managing any possible sources of `null. A few extra keystrokes is a small price to pay for the piece of mind and code clarity that is attained by ensuring that all optional values are diligently and _consistently_ captured as instances of `Optional`.
+It's a bit wordy, but it clearly flags the `foo.bar()` call as returning a possibly-null value, and it instills anyone reading your code with confidence that you've been diligently managing any possible sources of `null`. A few extra keystrokes is a small price to pay for the piece of mind and code clarity that is attained by ensuring that all optional values are diligently and _consistently_ captured as instances of `Optional`.
 
 
