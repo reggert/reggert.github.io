@@ -19,7 +19,7 @@ Some languages, such as Kotlin and Ceylon, attempt to wrangle null references by
 
 You obtain an empty instance by calling `Optional.empty()`, and you obtain an instance that has a value by calling `Optional.of(value)`. When interacting with code that uses `null` instead of `Optional`, you can also convert a nullable value to a (not null) `Optional` by calling `Optional.ofNullable(valueOrNull)`, and you can convert it back to a possibly-null value by calling its `orElse` method with an argument of `null`. When receiving an instance of `Optional`, you can either use an `if` conditional to check its `isPresent()` method to check whether it has a value (which can be obtained using its `get` method), or you can lambdas with other methods to specify actions to be performed if and only if the value is present.
 
-For earlier versions of Java, the Guava library provides a similar class, also named http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Optional.html[`Optional`]. Its methods are named slightly differently, but it works in more or less the same way as the Java 8 `Optional`. 
+For earlier versions of Java, the Guava library provides a similar class, also named http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Optional.html[`Optional`]. Its methods are named slightly differently, but it works in more or less the same way as the Java 8 `Optional`.
 
 == And why is this any better?
 
@@ -75,4 +75,43 @@ if (Optional.ofNullable(foo.bar()).isPresent()) {
 
 It's a bit wordy, but it clearly flags the `foo.bar()` call as returning a possibly-null value, and it instills anyone reading your code with confidence that you've been diligently managing any possible sources of `null`. A few extra keystrokes is a small price to pay for the piece of mind and code clarity that is attained by ensuring that all optional values are diligently and _consistently_ captured as instances of `Optional`.
 
+== Precondition checks
 
+To avoid letting `null` creep into your code inadvertantly in a way that violates your code invariants, it is important to include precondition checks at the top of any method or constructor that works with non-primitive parameters. This is especially important for parameters that get stored as fields, since a `null` that slips in via one of those might hang around until a much later method call, violating that method's invariant to never return `null`.
+
+Java 8 introduced the `java.util.Objects` class, which provides static methods for performing common tasks on objects. These include a method named `requireNonNull`, which throws a customizable `NullPointerException` if its argument is `null`. For earlier versions of Java, Guava's `Preconditions.checkNotNull` method works in the same way. Examples of appropriate use of each are shown below.
+
+----
+public final class BigPoint implements Serializable {
+   private final BigDecimal x;
+   private final BigDecimal y;
+   private final BigDecimal z;
+
+   // Java 8
+   public BigPoint(final BigDecimal x, final BigDecimal y, final BigDecimal z) {
+      this.x = Objects.requireNonNull(x, "x");
+      this.y = Objects.requireNonNull(y, "y");
+      this.z = Objects.requireNonNull(z, "z");
+   }
+   
+   // Java 6, Java 7
+   public BigPoint(final BigDecimal x, final BigDecimal y, final BigDecimal z) {
+      this.x = Preconditions.checkNotNull(x, "x");
+      this.y = Preconditions.checkNotNull(y, "y");
+      this.z = Preconditions.checkNotNull(z, "z");
+   }
+   
+   public BigDecimal getX() {
+      return x; // guaranteed non-null
+   }
+
+   // more methods....
+----
+
+Note that some people find more verbose error messages than simply the parameter name. However, I find that the combination of `NullPointerException` with the name of the thing that was `null` is sufficient information to understand exactly what the problem is without getting too wordy.
+
+Also, you will likely find it useful to use `static import` so that you can just call the null-check methods without qualifying them with their class names, but I left the class names in the above example for the sake of clarity about which class was being used in each case.
+
+== Epilogue
+
+To reiterate, all active Java projects should migrate to banning `null` from their codebases as soon as possible, replacing them with the `java.util.Optional` class (falling back on Guava's `Optional` for projects using Java 6 or 7). Doing so will improve the reliability of the code, make it easier to debug (since any appearance of `null` indicates a bug), as well as make it for anyone attempting to maintain the code or use its interfaces to understand which values are required and which are optional. Half a century later, we should all be doing our best to limit the damage caused by null references to _just_ a billion dollars.
