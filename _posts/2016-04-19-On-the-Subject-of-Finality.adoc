@@ -1,7 +1,7 @@
 = On the Subject of Finality
 :hp-tags: programming, Java, final, immutability
 
-The is the second installment in the _How to Make Your Java Code Not Suck_ series.
+This is the second installment in the _How to Make Your Java Code Not Suck_ series.
 
 == Fightin' (key)words
 
