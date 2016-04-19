@@ -21,4 +21,6 @@ I am primarily concerned with the first meaning of `final` in this article, thou
 
 == Final Thesis
 
+Now that we have covered the meanings of `final`, we come back to the subject of when it ought to be used.
+
 After experimenting with different styles over the course of ten years, I have settled upon the strongly held conviction that `final` should be applied to *all* fields, parameters, and variables except for cases where the value definitely needs to change over time (and only after considering the alternatives). The sole exceptions to this rule are constants defined on interfaces, which are implicitly `final` without needing to use the keyword, and parameters of abstract methods, where `final` has no effect.
