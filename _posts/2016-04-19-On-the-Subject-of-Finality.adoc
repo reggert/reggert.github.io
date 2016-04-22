@@ -34,4 +34,5 @@ The most common argument against that I've heard when I have argued in favor of 
 1. It's only an extra 5 characters (6 if you count the space). It's not like there's a worldwide letter shortage or something.
 2. In an IDE or a text editor with Java syntax highlighting, those `final` keywords at the beginnings of lines will appear in a different color than the surrounding text, providing you with  nice visual markers of where your variable declarations are.
 3. If you're concerned about verbose source code, Java is _not_ the language for you. Address all complaints to James Gosling.
-4. 
+4. Purely cosmetic concerns take a back seat to functional ones.
+
