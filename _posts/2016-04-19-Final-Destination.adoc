@@ -5,7 +5,7 @@ This is the second installment in the _How to Make Your Java Code Not Suck_ seri
 
 == Fightin' (key)words
 
-When debating Java code style, the one issue that has probably gotten me into the greatest number of heated arguments is the appropriate use of the keyword `final`. I am not alone in my views on the subject, but it seems that there are great unwashed masses of developers who have not yet been converted to the *Church of `final`*, and some of them seem to get quite annoyed when they see `final` used in places where it is not absolutely required.
+When debating Java code style, the one issue that has probably gotten me into the greatest number of heated arguments is the appropriate use of the keyword `final`. I am not alone in my views on the subject, but it seems that there are great unwashed masses of developers who have not yet been converted to the *Church of `final`*, and some of them seem to get quite annoyed when they see `final` used in places where it is not absolutely required by the compiler.
 
 However, before I go into detail on what my exact position is on the subject, and why nonbelievers are doomed to burn in Mutability Hell, let's recap what, exactly, `final` means when it appears in Java code.
 
