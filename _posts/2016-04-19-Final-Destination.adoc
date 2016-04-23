@@ -52,6 +52,10 @@ For a long time I debated whether I should mark method and constructor parameter
 
 The one exception to this is the case of a parameter of an `abstract` method, i.e., a method declared within an interfaces or abstract class without providing an implementation. Declaring such parameters to be `final` has no practical effect (in much the same way that declaring an interface method to be `public` has no effect, since all interface methods are `public` by definition), so it's okay to leave off the `final` in this case.
 
+=== In the Field of Fields
+
+TODO
+
 == Stuff and Nonsense
 
 Note that I haven't listed performance as a motivating use of `final`. In discussions of `final`, some people erroneously claim that using `final` enables the compiler to implement optimizations that it would not be able to perform on mutable values. This is simply not true. The compiler _can_ apply such optimizations, but it doesn't need you to tell it what values are immutable. The Java compiler can analyze code and figure out which variables are "effectively `final`" all on its own without your help.
