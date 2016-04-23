@@ -37,3 +37,15 @@ The most common argument against that I've heard when I have argued in favor of 
 4. Purely cosmetic concerns take a back seat to functional ones.
 
 == On a Soapbox
+
+Now that's I've gotten that out of the way, it's time to explain why you should be using `final` wherever you can.
+
+The first, and perhaps most obvious, or at least most often cited, reason for using `final` extensively is that it enables the compiler to catch cases where you unintentionally change a value that you didn't intend to, due a copy and paste error or because you simply mistyped or confused two identifiers. This "eliminating a class of errors" argument is certainly valid and important, however, it is frequently over-cited by proponents of `final` and may be found unconvincing by those who would counter that such errors would likely be caught by unit tests anyway.
+
+What's more important is the knowledge that the compiler _will_ catch such issues. When you declare a variable to be `final`, or when you're reading someone else's code and see a `final` variable, you can be confident that it always points to the same thing for its entire lifetime. 
+
+== Stuff and Nonsense
+
+Note that I haven't listed performance as a motivating use of `final`. In discussions of `final`, some people erroneously claim that using `final` enables the compiler to implement optimizations that it would not be able to perform on mutable values. This is simply not true. The compiler _can_ apply such optimizations, but it doesn't need you to tell it what values are immutable. The Java compiler can analyze code and figure out which variables are "effectively `final`" all on its own without your help.
+
+The reason that I bring this up is that some people use the fact that the above claim is erroneous as evidence _against_ using `final`, on the grounds that it is unnecessary to achieving performance optimizations. The reasons for using `final` have nothing to do with performance and have everything to do with improving the reliability and maintainability of your code.
