@@ -1,4 +1,4 @@
-= On the Subject of Finality
+= Final Destination
 :hp-tags: programming, Java, final, immutability
 
 This is the second installment in the _How to Make Your Java Code Not Suck_ series.
@@ -9,7 +9,7 @@ When debating Java code style, the one issue that has probably gotten me into th
 
 However, before I go into detail on what my exact position is on the subject, and why nonbelievers are doomed to burn in Mutability Hell, let's recap what, exactly, `final` means when it appears in Java code.
 
-== Final Overload
+== Keyword Overload
 
 First of all, any Java programmer worth his or her salt knows that `final` actually has two completely different meanings in Java, depending on where it is used.
 
@@ -19,7 +19,7 @@ The second, less commonly used (and probably less well understood), meaning of `
 
 I am primarily concerned with the first meaning of `final` in this article, though I will touch on the second a bit as well.
 
-== Final Thesis
+== `final` Thesis
 
 Now that we have covered the meanings of `final`, we come back to the subject of when it ought to be used.
 
@@ -36,3 +36,4 @@ The most common argument against that I've heard when I have argued in favor of 
 3. If you're concerned about verbose source code, Java is _not_ the language for you. Address all complaints to James Gosling.
 4. Purely cosmetic concerns take a back seat to functional ones.
 
+== On a Soapbox
