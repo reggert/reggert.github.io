@@ -9,7 +9,7 @@ When debating Java code style, the one issue that has probably gotten me into th
 
 However, before I go into detail on what my exact position is on the subject, and why nonbelievers are doomed to burn in Mutability Hell, let's recap what, exactly, `final` means when it appears in Java code.
 
-== Keyword Overload
+== Keyword overload
 
 First of all, any Java programmer worth his or her salt knows that `final` actually has two completely different meanings in Java, depending on where it is used.
 
@@ -19,13 +19,13 @@ The second, less commonly used (and probably less well understood), meaning of `
 
 I am primarily concerned with the first meaning of `final` in this article, though I will touch on the second a bit as well.
 
-== `final` Thesis
+== `final` thesis
 
 Now that we have covered the meanings of `final`, we come back to the subject of when it ought to be used.
 
 After experimenting with different styles over the course of several years, I have settled upon the strongly held conviction that *`final` should be applied to _all_ fields, parameters, and variables except for cases where the value definitely needs to change over time* (and only after considering the alternatives). The sole exceptions to this rule are constants defined on interfaces, which are implicitly `final` without needing to use the keyword, and parameters of abstract methods, where `final` has no effect.
 
-== Preemptive Strike
+== Preemptive strike
 
 Before I go on to answer the question of "Why?", I will first preemptively counter the reasons I've heard for "Why not?".
 
@@ -36,7 +36,7 @@ The most common argument against that I've heard when I have argued in favor of 
 3. If you're concerned about verbose source code, Java is _not_ the language for you. Address all complaints to James Gosling.
 4. Purely cosmetic concerns take a back seat to functional ones.
 
-== On a Soapbox
+== On a soapbox
 
 Now that's I've gotten that out of the way, it's time to explain why you should be using `final` wherever you can.
 
@@ -46,18 +46,26 @@ What's more important is the knowledge that the compiler _will_ catch such issue
 
 A benefit of somewhat lesser importance but still valuable comes about when `final` is always used whenever it can be used throughout a codebase. In such a project, any variable that is _not_ marked `final` is immediately noticeable as something special (i.e., intentionally mutable) and therefore warranting further scrutiny by anyone reading the code. If you're used to seeing `final` variables, fields, and parameters everywhere and spot one that isn't `final`, you are likely to immediately go looking for the lines of code where its value is being changed and determining why.
 
-=== A Few Words on Parameters
+=== A few words on parameters
 
 For a long time I debated whether I should mark method and constructor parameters as `final`, since doing so tends to make parameter lists considerably longer. However, I eventually came to the realization that (in Java, at least) there are _no_ good reasons to ever modify a parameter. The usual reasons that developers modify parameters, e.g., to "adjust" values or apply defaults or overrides, just result in the same identifier being used to represent two fundamentally different concepts (i.e., the value that was passed as an argument, and the "adjusted" value). There is no runtime cost to declaring multiple identifiers, so there is no need to "recycle" identifiers within a scope by reusing them for different things, and in fact doing so just causes confusion for anyone reading the code, who is likely to assume that any appearance of a parameter refers to the argument that was passed in. If you need to make such an "adjustment", assign it to a new variable, so that it is clear to anyone reading the code that it's not necessarily the same value as the argument.
 
 The one exception to this is the case of a parameter of an `abstract` method, i.e., a method declared within an interfaces or abstract class without providing an implementation. Declaring such parameters to be `final` has no practical effect (in much the same way that declaring an interface method to be `public` has no effect, since all interface methods are `public` by definition), so it's okay to leave off the `final` in this case.
 
-=== In the Field of Fields
+=== In the field of fields
 
 TODO
 
-== Stuff and Nonsense
+== Stuff and nonsense
 
 Note that I haven't listed performance as a motivating use of `final`. In discussions of `final`, some people erroneously claim that using `final` enables the compiler to implement optimizations that it would not be able to perform on mutable values. This is simply not true. The compiler _can_ apply such optimizations, but it doesn't need you to tell it what values are immutable. The Java compiler can analyze code and figure out which variables are "effectively `final`" all on its own without your help.
 
 The reason that I bring this up is that some people use the fact that the above claim is erroneous as evidence _against_ using `final`, on the grounds that it is unnecessary to achieving performance optimizations. The reasons for using `final` have nothing to do with performance and have everything to do with improving the reliability and maintainability of your code.
+
+== That other thing I mentioned
+
+TODO
+
+== `final` thoughts
+
+TODO
