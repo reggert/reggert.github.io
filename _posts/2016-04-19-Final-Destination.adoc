@@ -54,7 +54,13 @@ The one exception to this is the case of a parameter of an `abstract` method, i.
 
 === In the field of fields
 
-TODO
+Proper use of `final` is especially important when declaring fields on a class, since the field identifiers hang around for the lifetime of each class instance.
+
+It's been well established that `public` fields should only be used to define constants, and therefore should be `final` (and, to be idiomatic, also `static`). The sole exception to this is the case of a field defined in an interface, where all fields are implicitly `public`, `static`, and `final` without needing to be explicitly marked as such.
+
+However, in any case where you have a field that will be initialized when the object is created and never changed afterwards, you should make the field `final`. This is especially true when defining a class that represents some sort of "value" or bundle of values in order to make each instance immutable. The virtues and use cases of immutability warrant a post of their own, but for now suffice it to say that by making classes immutable, you enable instances to be freely passed around in an entirely thread-safe manner, and different parts of the code can hold references the same instance, with each part protected from unexpected changes being made by the other parts, and without the class itself needing to make potentially expensive defensive copies of any data it hands out.
+
+In many cases, such as with "bean" classes used in dependency injection containers, even if the class is not fully immutable, each instance is fully initialized up front with its dependencies, which never change after initialization (though the dependency objects themselves may contain internal state that changes over time). Though it is not always feasible given the limitations of some dependency injection systems (such as JPA) and framework base classes, when possible it is generally helpful to perform all initialization in the constructor and to mark the fields storing references to dependencies as `final`. This allows you to validate them all in one place without needing to resort to registering "post-initialization" hooks. It also ensures that the references are not unexpectedly modified after the startup phase, which in many cases can have bizarre and often catastrophic results.
 
 == Stuff and nonsense
 
