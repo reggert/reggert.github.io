@@ -13,9 +13,39 @@ However, before I go into detail on what my exact position is on the subject, an
 
 First of all, any Java programmer worth his or her salt knows that `final` actually has two completely different meanings in Java, depending on where it is used.
 
-The first, and probably most commonly used, meaning of `final` is as a modifier on declarations variables, fields, and parameters. When applied in front of one of these, it effectively makes the identifier a constant for the duration of his scope. This means that once the identifier is initialized, the value it refers to cannot be changed. Its use is generally mandated when defining constants (especially in conjuction with the `static` keyword), and prior to Java 8, its use was required by the compiler whenever an anonymous class creates a closure around a variable in the enclosing scope. For primitives, the use of `final` effectively makes the variable a true constant (within its scope), but when applied to objects, it only makes the reference constant, but not the object itself, so care must be taken to not confuse the two concepts.
+The first, and probably most commonly used, meaning of `final` is as a modifier on declarations variables, fields, and parameters. When applied in front of one of these, it effectively makes the identifier a constant for the duration of his scope. This means that once the identifier is initialized, the value it refers to cannot be changed. Its use is generally mandated when defining constants (especially in conjuction with the `static` keyword), and prior to Java 8, its use was required by the compiler whenever an anonymous class creates a closure around a variable in the enclosing scope. For primitives, the use of `final` effectively makes the variable a true constant (within its scope), but when applied to objects, it only makes the reference constant, but not the object itself, so care must be taken to not confuse the two concepts. Examples of this use of `final` are shown below.
 
-The second, less commonly used (and probably less well understood), meaning of `final` is as a modifier on classes and methods to restrict inheritance and method overriding. Applying `final` to a class prevents the creation of subclasses that extend it. Applying `final` to a method prevents subclasses from overriding that method.
+----
+public class FinalExample {
+  final String exampleField;
+  
+  public FinalExample(final String exampleParameter) {
+     this.exampleField = exampleParameter;
+  }
+  
+  public void writeToFile(final File anotherExampleParameter) throws IOException {
+     try (final exampleVariable = new FileWriter(anotherExampleParameter)) {
+        exampleVariable.write(exampleField);
+     }
+  }
+}
+----
+
+The second, less commonly used (and probably less well understood), meaning of `final` is as a modifier on classes and methods to restrict inheritance and method overriding. Applying `final` to a class prevents the creation of subclasses that extend it. Applying `final` to a method prevents subclasses from overriding that method. Examples of this meaning are shown below.
+
+----
+public class BaseClass {
+   public final void explicitlyFinalMethod() {
+      System.out.println("foo");
+   }
+}
+
+public final class FinalClass extends BaseClass {
+   public void implicitlyFinalMethod() {
+      System.out.println("bar");
+   }
+}
+----
 
 I am primarily concerned with the first meaning of `final` in this article, though I will touch on the second a bit as well.
 
