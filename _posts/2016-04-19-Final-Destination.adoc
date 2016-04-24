@@ -76,6 +76,20 @@ What's more important is the knowledge that the compiler _will_ catch such issue
 
 A benefit of somewhat lesser importance but still valuable comes about when `final` is always used whenever it can be used throughout a codebase. In such a project, any variable that is _not_ marked `final` is immediately noticeable as something special (i.e., intentionally mutable) and therefore warranting further scrutiny by anyone reading the code. If you're used to seeing `final` variables, fields, and parameters everywhere and spot one that isn't `final`, you are likely to immediately go looking for the lines of code where its value is being changed and determining why.
 
+=== Loop the loop
+
+An often overlooked detail of the "for-each" `for` loop syntax introduced in Java 5 is the the element variable can (and should) be declared `final`, as in the following example.
+
+----
+public void printStrings(final Collection<String> strings) {
+   for (final String s : strings) {
+      System.out.println(s);
+   }
+}
+----
+
+Though `final` makes the `for` declaration a bit longer, allowing the possibility that the element variable may change mid-iteration is likely to cause chaos and confusion for anyone debugging your code. If you change the variable _intentionally_ within the loop iteration, someone trying to maintain your code might just hunt you down and murder you for causing them such headaches.
+
 === A few words on parameters
 
 For a long time I debated whether I should mark method and constructor parameters as `final`, since doing so tends to make parameter lists considerably longer. However, I eventually came to the realization that (in Java, at least) there are _no_ good reasons to ever modify a parameter. The usual reasons that developers modify parameters, e.g., to "adjust" values or apply defaults or overrides, just result in the same identifier being used to represent two fundamentally different concepts (i.e., the value that was passed as an argument, and the "adjusted" value). There is no runtime cost to declaring multiple identifiers, so there is no need to "recycle" identifiers within a scope by reusing them for different things, and in fact doing so just causes confusion for anyone reading the code, who is likely to assume that any appearance of a parameter refers to the argument that was passed in. If you need to make such an "adjustment", assign it to a new variable, so that it is clear to anyone reading the code that it's not necessarily the same value as the argument.
