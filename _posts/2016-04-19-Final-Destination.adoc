@@ -9,7 +9,7 @@ When debating Java code style, the one issue that has probably gotten me into th
 
 However, before I go into detail on what my exact position is on the subject, and why nonbelievers are doomed to burn in Mutability Hell, let's recap what, exactly, `final` means when it appears in Java code.
 
-== Keyword overload
+== Warning: overload detected
 
 First of all, any Java programmer worth his or her salt knows that `final` actually has two completely different meanings in Java, depending on where it is used.
 
