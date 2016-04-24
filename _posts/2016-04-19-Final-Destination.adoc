@@ -70,7 +70,11 @@ The reason that I bring this up is that some people use the fact that the above 
 
 == That other thing I mentioned
 
-TODO
+As you may (hopefully) recall, the `final` keyword has two different meanings in Java. We've already covered its use when applied to fields, variables, and parameters to control the mutability of those identifiers. Now it is time to discuss its use in controlling extensibility of classes when it is applied to classes and methods.
+
+Unlike with fields, where using `final` should be treated as the default practice, applying it to method and classes is a bit more of an dark art. 
+
+As a general rule, `final` should be applied whenever the correctness of the code is predicated on certain (or all) methods of a class not being overridden. An obvious example of this is when defining an immutable class, in which case, allowing it to be extended would allow for the possibility that a derived class is mutable, compromising the immutability guarantees of the base class.
 
 == `final` thoughts
 
