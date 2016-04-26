@@ -94,6 +94,18 @@ Though `final` makes the `for` declaration a bit longer, allowing the possibilit
 
 For a long time I debated whether I should mark method and constructor parameters as `final`, since doing so tends to make parameter lists considerably longer. However, I eventually came to the realization that (in Java, at least) there are _no_ good reasons to ever modify a parameter. The usual reasons that developers modify parameters, e.g., to "adjust" values or apply defaults or overrides, just result in the same identifier being used to represent two fundamentally different concepts (i.e., the value that was passed as an argument, and the "adjusted" value). There is no runtime cost to declaring multiple identifiers, so there is no need to "recycle" identifiers within a scope by reusing them for different things, and in fact doing so just causes confusion for anyone reading the code, who is likely to assume that any appearance of a parameter refers to the argument that was passed in. If you need to make such an "adjustment", assign it to a new variable, so that it is clear to anyone reading the code that it's not necessarily the same value as the argument.
 
+Therefore, always mark all parameters as `final`. If the parameter list gets long, put each parameter on its own line, like so:
+
+----
+public void someMethod(
+   final int firstParameter,
+   final String secondParameter,
+   final double thirdParameter
+) {
+   // do stuff
+}
+----
+
 The one exception to this is the case of a parameter of an `abstract` method, i.e., a method declared within an interfaces or abstract class without providing an implementation. Declaring such parameters to be `final` has no practical effect (in much the same way that declaring an interface method to be `public` has no effect, since all interface methods are `public` by definition), so it's okay to leave off the `final` in this case.
 
 === In the field of fields
