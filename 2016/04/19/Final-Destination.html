@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Final Destination</title>
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="//reggert.github.io/themes/Casper/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="//reggert.github.io/themes/Casper/assets/css/screen.css?v=1.0.0" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="https://reggert.github.io/2016/04/19/Final-Destination.html" />
+    
+    <meta property="og:site_name" content="Broken Build" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Final Destination" />
+    <meta property="og:description" content="This is the second installment in the How to Make Your Java Code Not Suck series. Fightin&#x27; (key)words When debating Java code style, the one issue that has probably gotten me into the greatest number of heated arguments is..." />
+    <meta property="og:url" content="https://reggert.github.io/2016/04/19/Final-Destination.html" />
+    <meta property="article:published_time" content="2016-04-19T04:00:00.000Z" />
+    <meta property="article:modified_time" content="2016-04-26T04:11:09.785Z" />
+    <meta property="article:tag" content="programming" />
+    <meta property="article:tag" content="Java" />
+    <meta property="article:tag" content="final" />
+    <meta property="article:tag" content="immutability" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Final Destination" />
+    <meta name="twitter:description" content="This is the second installment in the How to Make Your Java Code Not Suck series. Fightin&#x27; (key)words When debating Java code style, the one issue that has probably gotten me into the greatest number of heated arguments is..." />
+    <meta name="twitter:url" content="https://reggert.github.io/2016/04/19/Final-Destination.html" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Broken Build",
+    "author": {
+        "@type": "Person",
+        "name": "Richard W. Eggert II",
+        "image": "https://avatars.githubusercontent.com/u/1971881?v=3",
+        "url": "undefined/author/undefined",
+        "sameAs": null
+    },
+    "headline": "Final Destination",
+    "url": "https://reggert.github.io/2016/04/19/Final-Destination.html",
+    "datePublished": "2016-04-19T04:00:00.000Z",
+    "dateModified": "2016-04-26T04:11:09.785Z",
+    "keywords": "programming,  Java,  final,  immutability",
+    "description": "This is the second installment in the How to Make Your Java Code Not Suck series. Fightin&#x27; (key)words When debating Java code style, the one issue that has probably gotten me into the greatest number of heated arguments is..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost ?" />
+    <link rel="alternate" type="application/rss+xml" title="Broken Build" href="https://reggert.github.io/rss" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+</head>
+<body class="post-template tag-programming tag-Java tag-final tag-immutability">
+
+    
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="https://reggert.github.io">Home</a>
+        <!-- <a class="subscribe-button icon-feed" href="https://reggert.github.io/rss/">Subscribe</a> -->
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post tag-programming tag-Java tag-final tag-immutability">
+
+        <header class="post-header">
+            <h1 class="post-title">Final Destination</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2016-04-19">19 April 2016</time>  on <a href="https://reggert.github.io/tag/programming">programming</a>, <a href="https://reggert.github.io/tag/Java"> Java</a>, <a href="https://reggert.github.io/tag/final"> final</a>, <a href="https://reggert.github.io/tag/immutability"> immutability</a>
+            </section>
+        </header>
+
+        <section class="post-content">
+            <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is the second installment in the <em>How to Make Your Java Code Not Suck</em> series.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fightin_key_words">Fightin' (key)words</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When debating Java code style, the one issue that has probably gotten me into the greatest number of heated arguments is the appropriate use of the keyword <code>final</code>. I am not alone in my views on the subject, but it seems that there are great unwashed masses of developers who have not yet been converted to the <strong>Church of <code>final</code></strong>, and some of them seem to get quite annoyed when they see <code>final</code> used in places where it is not absolutely required by the compiler.</p>
+</div>
+<div class="paragraph">
+<p>However, before I go into detail on what my exact position is on the subject, and why nonbelievers are doomed to burn in Mutability Hell, let&#8217;s recap what, exactly, <code>final</code> means when it appears in Java code.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_warning_overload_detected">Warning: overload detected</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>First of all, any Java programmer worth his or her salt knows that <code>final</code> actually has two completely different meanings in Java, depending on where it is used.</p>
+</div>
+<div class="paragraph">
+<p>The first, and probably most commonly used, meaning of <code>final</code> is as a modifier on declarations variables, fields, and parameters. When applied in front of one of these, it effectively makes the identifier a constant for the duration of his scope. This means that once the identifier is initialized, the value it refers to cannot be changed. Its use is generally mandated when defining constants (especially in conjuction with the <code>static</code> keyword), and prior to Java 8, its use was required by the compiler whenever an anonymous class creates a closure around a variable in the enclosing scope. For primitives, the use of <code>final</code> effectively makes the variable a true constant (within its scope), but when applied to objects, it only makes the reference constant, but not the object itself, so care must be taken to not confuse the two concepts. Examples of this use of <code>final</code> are shown below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>public class FinalExample {
+  final String exampleField;
+
+  public FinalExample(final String exampleParameter) {
+     this.exampleField = exampleParameter;
+  }
+
+  public void writeToFile(final File anotherExampleParameter) throws IOException {
+     try (final exampleVariable = new FileWriter(anotherExampleParameter)) {
+        exampleVariable.write(exampleField);
+     }
+  }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The second, less commonly used (and probably less well understood), meaning of <code>final</code> is as a modifier on classes and methods to restrict inheritance and method overriding. Applying <code>final</code> to a class prevents the creation of subclasses that extend it. Applying <code>final</code> to a method prevents subclasses from overriding that method. Examples of this meaning are shown below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>public class BaseClass {
+   public final void explicitlyFinalMethod() {
+      System.out.println("foo");
+   }
+}
+
+public final class FinalClass extends BaseClass {
+   public void implicitlyFinalMethod() {
+      System.out.println("bar");
+   }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I am primarily concerned with the first meaning of <code>final</code> in this article, though I will touch on the second a bit as well.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__code_final_code_thesis"><code>final</code> thesis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that we have covered the meanings of <code>final</code>, we come back to the subject of when it ought to be used.</p>
+</div>
+<div class="paragraph">
+<p>After experimenting with different styles over the course of several years, I have settled upon the strongly held conviction that <strong><code>final</code> should be applied to <em>all</em> fields, parameters, and variables except for cases where the value definitely needs to change over time</strong> (and only after considering the alternatives). The sole exceptions to this rule are constants defined on interfaces, which are implicitly <code>final</code> without needing to use the keyword, and parameters of abstract methods, where <code>final</code> has no effect.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_preemptive_strike">Preemptive strike</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before I go on to answer the question of "Why?", I will first preemptively counter the reasons I&#8217;ve heard for "Why not?".</p>
+</div>
+<div class="paragraph">
+<p>The most common argument against that I&#8217;ve heard when I have argued in favor of liberal use of <code>final</code> is that it "clutters up" the code with all those "extra" keywords. To that I have the following things to say:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>It&#8217;s only an extra 5 characters (6 if you count the space). It&#8217;s not like there&#8217;s a worldwide letter shortage or something. There&#8217;s a little extra typing involved, but it&#8217;s not so much as to be cumbersome.</p>
+</li>
+<li>
+<p>In an IDE or a text editor with Java syntax highlighting, those <code>final</code> keywords at the beginnings of lines will appear in a different color than the surrounding text, providing you with  nice visual markers of where your variable declarations are.</p>
+</li>
+<li>
+<p>If you&#8217;re concerned about verbose source code, Java is <em>not</em> the language for you. Address all complaints to James Gosling.</p>
+</li>
+<li>
+<p>Purely cosmetic concerns take a back seat to functional ones.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_on_a_soapbox">On a soapbox</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that&#8217;s I&#8217;ve gotten that out of the way, it&#8217;s time to explain why you should be using <code>final</code> wherever you can.</p>
+</div>
+<div class="paragraph">
+<p>The first, and perhaps most obvious, or at least most often cited, reason for using <code>final</code> extensively is that it enables the compiler to catch cases where you unintentionally change a value that you didn&#8217;t intend to, due a copy and paste error or because you simply mistyped or confused two identifiers. This "eliminating a class of errors" argument is certainly valid and important, however, it is frequently over-cited by proponents of <code>final</code> and may be found unconvincing by those who would counter that such errors would likely be caught by unit tests anyway.</p>
+</div>
+<div class="paragraph">
+<p>What&#8217;s more important is the knowledge that the compiler <em>will</em> catch such issues. When you declare a variable to be <code>final</code>, or when you&#8217;re reading someone else&#8217;s code and see a <code>final</code> variable, you can be confident that the identifier always points to the same thing for its entire lifetime. This means that if you see the identifier used in an expression somewhere, you need only go back to the line where it was initialized to find out its value. This saves you the trouble of needing to scrutinize every line of a method to determine whether its value may have changed at any point, and gives you the peace of mind of knowing that you didn&#8217;t overlook such a line. When <code>final</code> is applied consistently, this helps you to debug problems by allowing you to more quickly narrow down the possible causes, and it helps developers who have not seen the code before (or recently) to more easily understand what it does.</p>
+</div>
+<div class="paragraph">
+<p>A benefit of somewhat lesser importance but still valuable comes about when <code>final</code> is always used whenever it can be used throughout a codebase. In such a project, any variable that is <em>not</em> marked <code>final</code> is immediately noticeable as something special (i.e., intentionally mutable) and therefore warranting further scrutiny by anyone reading the code. If you&#8217;re used to seeing <code>final</code> variables, fields, and parameters everywhere and spot one that isn&#8217;t <code>final</code>, you are likely to immediately go looking for the lines of code where its value is being changed and try to determine why it was made mutable.</p>
+</div>
+<div class="sect2">
+<h3 id="_loop_the_loop">Loop the loop</h3>
+<div class="paragraph">
+<p>An often overlooked detail of the "for-each" <code>for</code> loop syntax introduced in Java 5 is the the element variable can (and should) be declared <code>final</code>, as in the following example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>public void printStrings(final Collection&lt;String&gt; strings) {
+   for (final String s : strings) {
+      System.out.println(s);
+   }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Though <code>final</code> makes the <code>for</code> declaration a bit longer, allowing the possibility that the element variable may change mid-iteration is likely to cause chaos and confusion for anyone debugging your code. If you change the variable <em>intentionally</em> within the loop iteration, someone trying to maintain your code might just hunt you down and murder you for causing them such headaches.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_a_few_words_on_parameters">A few words on parameters</h3>
+<div class="paragraph">
+<p>For a long time I debated whether I should mark method and constructor parameters as <code>final</code>, since doing so tends to make parameter lists considerably longer. However, I eventually came to the realization that (in Java, at least) there are <em>no</em> good reasons to ever modify a parameter. The usual reasons that developers modify parameters, e.g., to "adjust" values or apply defaults or overrides, just result in the same identifier being used to represent two fundamentally different concepts (i.e., the value that was passed as an argument, and the "adjusted" value). There is no runtime cost to declaring multiple identifiers, so there is no need to "recycle" identifiers within a scope by reusing them for different things, and in fact doing so just causes confusion for anyone reading the code, who is likely to assume that any appearance of a parameter refers to the argument that was passed in. If you need to make such an "adjustment", assign it to a new variable, so that it is clear to anyone reading the code that it&#8217;s not necessarily the same value as the argument.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, always mark all parameters as <code>final</code>. If the parameter list gets long, put each parameter on its own line, like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>public void someMethod(
+   final int firstParameter,
+   final String secondParameter,
+   final double thirdParameter
+) {
+   // do stuff
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The one exception to this is the case of a parameter of an <code>abstract</code> method, i.e., a method declared within an interfaces or abstract class without providing an implementation. Declaring such parameters to be <code>final</code> has no practical effect (in much the same way that declaring an interface method to be <code>public</code> has no effect, since all interface methods are <code>public</code> by definition), so it&#8217;s okay to leave off the <code>final</code> in this case.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_in_the_field_of_fields">In the field of fields</h3>
+<div class="paragraph">
+<p>Proper use of <code>final</code> is especially important when declaring fields on a class, since the field identifiers hang around for the lifetime of each class instance.</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s been well established that <code>public</code> fields should only be used to define constants, and therefore should be <code>final</code> (and, to be idiomatic, also <code>static</code>). The sole exception to this is the case of a field defined in an interface, where all fields are implicitly <code>public</code>, <code>static</code>, and <code>final</code> without needing to be explicitly marked as such.</p>
+</div>
+<div class="paragraph">
+<p>However, in any case where you have a field that will be initialized when the object is created and never changed afterwards, you should make the field <code>final</code>. This is especially true when defining a class that represents some sort of "value" or bundle of values in order to make each instance immutable. The virtues and use cases of immutability warrant a post of their own, but for now suffice it to say that by making classes immutable, you enable instances to be freely passed around in an entirely thread-safe manner, and different parts of the code can hold references the same instance, with each part protected from unexpected changes being made by the other parts, and without the class itself needing to make potentially expensive defensive copies of any data it hands out.</p>
+</div>
+<div class="paragraph">
+<p>In many cases, such as with "bean" classes used in dependency injection containers, even if the class is not fully immutable, each instance is fully initialized up front with its dependencies, which never change after initialization (though the dependency objects themselves may contain internal state that changes over time). Though it is not always feasible given the limitations of some dependency injection systems (such as JPA) and framework base classes, when possible it is generally helpful to perform all initialization in the constructor and to mark the fields storing references to dependencies as <code>final</code>. This allows you to validate them all in one place without needing to resort to registering "post-initialization" hooks. It also ensures that the references are not unexpectedly modified after the startup phase, which in many cases can have bizarre and often catastrophic results.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_stuff_and_nonsense">Stuff and nonsense</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Note that I haven&#8217;t listed performance as a motivating use of <code>final</code>. In discussions of <code>final</code>, some people erroneously claim that using <code>final</code> enables the compiler to implement optimizations that it would not be able to perform on mutable values. This is simply not true. The compiler <em>can</em> apply such optimizations, but it doesn&#8217;t need you to tell it what values are immutable. The Java compiler can analyze code and figure out which variables are "effectively `final`" all on its own without your help.</p>
+</div>
+<div class="paragraph">
+<p>The reason that I bring this up is that some people use the fact that the above claim is erroneous as evidence <em>against</em> using <code>final</code>, on the grounds that it is unnecessary to achieving performance optimizations. The reasons for using <code>final</code> have nothing to do with performance and have everything to do with improving the reliability and maintainability of your code.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_that_other_thing_i_mentioned">That other thing I mentioned</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As you may (unless your brain is broken) recall, the <code>final</code> keyword has two different meanings in Java. We&#8217;ve already covered its use when applied to fields, variables, and parameters to control the mutability of those identifiers. Now it is time to discuss its use in controlling extensibility of classes when it is applied to classes and methods.</p>
+</div>
+<div class="paragraph">
+<p>Unlike with fields, where using <code>final</code> should be treated as the default practice, applying it to method and classes is a bit more of an dark art.</p>
+</div>
+<div class="paragraph">
+<p>As a general rule, <code>final</code> should be applied whenever the correctness of the code is predicated on certain (or all) methods of a class not being overridden. An obvious example of this is when defining an immutable class, in which case, allowing it to be extended would allow for the possibility that a derived class is mutable, compromising the immutability guarantees of the base class.</p>
+</div>
+<div class="paragraph">
+<p>On the opposite side, in cases where you are implementating behaviors that you do intend to be overridden or extended, you clearly should <em>not</em> use <code>final</code>.</p>
+</div>
+<div class="paragraph">
+<p>Unfortunately, in between these two positions is a significant amount of grey area. In order to decide whether to use <code>final</code> in these cases (and to what extent), you must weigh the likelihood that someone will need to extend or override the existing behavior against the documentary benefit of clearing marking what code was not intended to be extended. For the most part, this will need to be a judgment call based on your own past experience. However, keep in mind that if you are writing code that will not be used outside your own project, you will probably be able to change your mind about the "`final`-ness" of a particular class or method without causing too much trouble. If this is the cause, when in doubt, it&#8217;s probably better to make things <code>final</code> until you run into a reason to change it to non-<code>final</code>. On the other hand, if you are writing libraries that will be used outside your project, it&#8217;s probably safer to make things non-<code>final</code> in case someone needs to extend a class in a way that you did not anticipate. However, still consider using <code>final</code> in these cases if it is likely that overriding a method will cause non-overridden functionality to break, or if it causes code that uses the class to break.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__code_final_code_thoughts"><code>final</code> thoughts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This brings us to the end of this particular rant. The most important point to draw from this is that you should <em>always</em> use <code>final</code> for local variables, fields, and parameters unless you have a really, really (really) good reason not to do so in a particular case.</p>
+</div>
+<div class="paragraph">
+<p>As I stated previously, I have come to this position after having evolved my coding style over several years, at least primarily using <code>final</code> for local variables, then gradually also applying it to fields and eventually parameters. I have never come across a case where I later regreted having used <code>final</code>, but I have come across many cases when reading (or debugging) other people&#8217;s code and sorely wished they they had used <code>final</code> consistently. Indeed, immutable variables are the default (and sometimes only) case in many functional programming languages, and for good reason.</p>
+</div>
+<div class="paragraph">
+<p>The more you can leverage the compiler to prevent unexpected things from happening in your code, the happier you&#8217;ll be as a developer in the long run.</p>
+</div>
+</div>
+</div>
+        </section>
+
+        <footer class="post-footer">
+
+
+            <figure class="author-image">
+                <a class="img" href="" style="background-image: url(https://avatars.githubusercontent.com/u/1971881?v=3)"><span class="hidden">Richard W. Eggert II's Picture</span></a>
+            </figure>
+
+            <section class="author">
+                <h4><a href="">Richard W. Eggert II</a></h4>
+
+                    <p>Read <a href="">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    <span class="author-location icon-location">Baltimore, MD</span>
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/share?text=Final%20Destination&amp;url=https://reggert.github.io/2016/04/19/Final-Destination.html"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://reggert.github.io/2016/04/19/Final-Destination.html"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https://reggert.github.io/2016/04/19/Final-Destination.html"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+
+        <section class="post-comments">
+          <div id="disqus_thread"></div>
+          <script type="text/javascript">
+          var disqus_shortname = 'brokenbuild'; // required: replace example with your forum shortname
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </section>
+
+
+    </article>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="https://reggert.github.io">Broken Build</a> &copy; 2016</section>
+        <section class="poweredby">Proudly published with <a href="http://hubpress.io">HubPress</a></section>
+    </footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
+      <script type="text/javascript">
+        jQuery( document ).ready(function() {
+          // change date with ago
+          jQuery('ago.ago').each(function(){
+            var element = jQuery(this).parent();
+            element.html( moment(element.text()).fromNow());
+          });
+        });
+
+        hljs.initHighlightingOnLoad();      
+      </script>
+
+    <script type="text/javascript" src="//reggert.github.io/themes/Casper/assets/js/jquery.fitvids.js?v=1.0.0"></script>
+    <script type="text/javascript" src="//reggert.github.io/themes/Casper/assets/js/index.js?v=1.0.0"></script>
+
+</body>
+</html>
